@@ -32,10 +32,21 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 description: currentProduct.content.productShortDescription
               };
 
-              if (currentProduct.price) {
-                product.price = currentProduct.price.price;
-              } else if (currentProduct.priceRange) {
-                product.price = currentProduct.priceRange.lower.price;
+             if (currentProduct.priceRange) {
+                if(currentProduct.priceRange.lower.salePrice){
+                  product.price = currentProduct.priceRange.lower.salePrice;
+                }
+                else{
+                    product.price = currentProduct.priceRange.lower.price;
+                }
+              }
+              else if (currentProduct.price) {
+                if(currentProduct.price.salePrice){
+                  product.price = currentProduct.price.salePrice;
+                }
+                else{
+                  product.price = currentProduct.price.price;
+                }
               }
               if (currentProduct.upcs)
                 product.upc = currentProduct.upcs[0];
@@ -116,13 +127,13 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 }
 
                 var items = [];
-                var item = {};
 
                 order.items.forEach(function(lineItem){
+                  var item = {};
                   console.log(lineItem);
                   //var lineItem = order.items.models[i].attributes;
                   item.page_id = self.getProductCode(config,lineItem.product.productCode);
-                  item.unit_price = lineItem.total;
+                  item.unit_price = lineItem.unitPrice.extendedAmount;
                   item.quantity = lineItem.quantity;
                   item.product_name = lineItem.product.name;
                   if (lineItem.product.imageUrl !== null)
@@ -134,12 +145,13 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 });
 
                 console.log(items);
+                //http://help.powerreviews.com/Content/Collect%20Email/Checkout%20Beacon.htm
                 tracker.trackCheckout({
                     merchantGroupId: config.merchantGrpId,
                     merchantId: config.merchantId,
                     locale: config.locale,
                     merchantUserId: customerId,
-                    marketingOptIn: false,
+                    marketingOptIn: true,
                     userEmail: order.email,
                     userFirstName: firstName,
                     userLastName: lastName,
@@ -153,7 +165,7 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 console.log(e);
               }
 
-              if ($(".pr-wyb")) {
+              if ($(".pr-wyb").length) {
                var maxPriceItem = _.max(order.items, function(item) {
                  return item.total;
                });
