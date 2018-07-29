@@ -96,7 +96,7 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
          },
          displayRoi: function(config) {
           var self = this;
-           var order = require.mozuData('order');
+           var order = require.mozuData('order')||require.mozuData('checkout');
 
             try {
                 var tracker = POWERREVIEWS.tracker.createTracker({
