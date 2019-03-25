@@ -1,0 +1,10 @@
+{% preload_json model.config "categoryconfig" %}
+{% for params in apiContext.headers %}
+  {% if params.key == "x-vol-site" %}
+    {% with "id eq {0}"|string_format(params.value) as filter %}
+      {% include_entities "widgets/PowerReviews/category-settings" listFQN="mozu-powerreviews2-sitesettings@mzint" filter=filter %}
+    {% endwith %}
+  {% endif %}
+{% endfor %}
+<script type="text/javascript" src="//ui.powerreviews.com/stable/4.0/ui.js"></script>
+{% require_script "widgets/powerreviews" %}

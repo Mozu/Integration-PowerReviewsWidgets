@@ -158,3 +158,11 @@ And updates the following file:
 2.	In the **Site tree**, navigate to **Templates** > **Product**.
 3.	Click the **Widgets** button at the top of the editor.
 4.	Drag the **Power review** widget to any dropzone the page. Configure the widget and save.
+
+
+##Enable on Product-Listing page and Quick-view(Description tab):-
+
+1.	In Admin, go to Main > Site Builder > Editor.
+2.	In the site tree, expand Templates and select Category..
+3.	Switch to Widgets in the site tree and drag PowerReviews Category Display widget into a dropzone.
+4.	Enter “mz-directory-ratings” in Category Container, “pr-quick-view” in Quick View Container and select a value from dropdown in UPC/ASIN.

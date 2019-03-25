@@ -26,6 +26,10 @@
   {% endif %}
   <div id="pr-wyb" ></div>
 {% endif %}
-
+<input type="hidden" id="{{model.config.idType}}Review" value="{{model.config.idType}}" >
+{% if pageContext.isEditMode == 'true' %}
+    Power Reviews {{model.config.idType}}
+  {% endif %}
+<div id="pr-{{model.config.idType}}"></div>
 <script type="text/javascript" src="//ui.powerreviews.com/stable/4.0/ui.js"></script>
 {% require_script "widgets/powerreviews" %}

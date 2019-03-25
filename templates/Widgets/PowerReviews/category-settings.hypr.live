@@ -1,0 +1,3 @@
+{% with model|first as modelVal %}
+{% preload_json modelVal "categorysettings" %}
+{% endwith %}

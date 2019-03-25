@@ -11,3 +11,7 @@
     {% endif %}
     <div id="pr-qasnippet" class="pr-qasnippet"></div>
 {% endif %}
+{% if pageContext.isEditMode == 'true' %}
+    Power Reviews {{model.config.idType}}
+  {% endif %}
+<div id="pr-{{model.config.idType}}snippet" class="pr-{{model.config.idType}}snippet"></div>

@@ -37,9 +37,20 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
               } else if (currentProduct.priceRange) {
                 product.price = currentProduct.priceRange.lower.price;
               }
-              if (currentProduct.upcs)
-                product.upc = currentProduct.upcs[0];
-
+              product.upc = '';
+              if ($("#pr-asinsnippet").length > 0) {
+                //Code to read ASIN from product properties
+                var isAsin = _.find(currentProduct.properties, {"attributeFQN": "tenant~asin"});
+                if (isAsin && isAsin.values && isAsin.values.length && isAsin.values[0].value) {
+                    product.upc=isAsin.values[0].value;
+                }
+              } else if ($("#pr-upcsnippet").length > 0) {
+                //Code to read UPC from upCs
+                if (currentProduct.upCs) {
+                  product.upc = currentProduct.upCs[0];
+                }
+              }
+              
               if (currentProduct.mfgPartNumbers)
                 product.manufacturer_id = currentProduct.mfgPartNumbers[0];
 
@@ -69,6 +80,14 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 product.brand_name  = brandProperty.values[0].stringValue; //Get from property
               }
 
+              if(currentProduct.variations) {
+                product.variants = [];
+                _.each(currentProduct.variations, function(vItem){
+                  product.variants.push({
+                    'page_id_variant': vItem.productCode
+                  });
+                });
+              }
 
               //TODO: add variants
               var components = {};
@@ -77,6 +96,10 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
               if ($("#pr-qasnippet").length > 0) components.QuestionSnippet = "pr-qasnippet";
               if ($("#pr-qadisplay").length > 0) components.QuestionDisplay = "pr-qadisplay";
               if ($("#pr-wyb").length > 0) components.WhydYouBuyDisplay = "pr-wyb";
+              if ($("#pr-upcsnippet").length > 0) components.PucSnippet = "pr-upcsnippet";
+              if ($("#pr-asinsnippet").length > 0) components.AsinSnippet = "pr-asinnippet";
+              if ($("#pr-upc").length > 0) components.PucReview = "pr-upc";
+              if ($("#pr-asin").length > 0) components.AsinReview = "pr-asin";
 
               var prConfig = self.getPrConfig(config, productCode);
               if ($("#reviewDisplayType").val() === "paging")
@@ -87,10 +110,11 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 prConfig.REVIEW_DISPLAY_SNAPSHOT_TYPE ='SIMPLE';
 
               prConfig.style_sheet = "/stylesheets/widgets/powerreview.css";
-              prConfig.review_wrapper_url = '/write-a-review?pr_page_id='+productCode+'&locale='+config.locale+'&pr_returnUrl=' + returnUrl;
+              prConfig.review_wrapper_url = '/write-a-review?pr_page_id='+productCode+'&locale='+config.locale;
               prConfig.product = product;
               prConfig.page_id = productCode;
               prConfig.components = components;
+              prConfig.structured_data_product_id = productCode;
 
               POWERREVIEWS.display.render(prConfig);
          },
@@ -116,11 +140,11 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 }
 
                 var items = [];
-                var item = {};
 
                 order.items.forEach(function(lineItem){
                   console.log(lineItem);
                   //var lineItem = order.items.models[i].attributes;
+                  var item = {};
                   item.page_id = self.getProductCode(config,lineItem.product.productCode);
                   item.unit_price = lineItem.total;
                   item.quantity = lineItem.quantity;
@@ -139,7 +163,7 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                     merchantId: config.merchantId,
                     locale: config.locale,
                     merchantUserId: customerId,
-                    marketingOptIn: false,
+                    marketingOptIn: true,
                     userEmail: order.email,
                     userFirstName: firstName,
                     userLastName: lastName,
@@ -208,7 +232,8 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                 merchant_id: config.merchantId,
                 enable_client_side_structured_data: true,
                 api_key: config.apiKey,
-                review_wrapper_url: '/write-a-review?pr_page_id='+productCode+'&locale='+config.locale+'&returnUrl=' + returnUrl,
+                structured_data_product_id: productCode,
+                review_wrapper_url: '/write-a-review?pr_page_id='+productCode+'&locale='+config.locale,
                 components: {
                   CategorySnippet: 'pr-snippet-'+productCode
                 }
@@ -248,5 +273,26 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
           }
 
         });
+
+        if(window.POWERREVIEWS && require.mozuData("categoryconfig") && require.mozuData("categoryconfig").qvClass !== '' && require.mozuData("categorysettings")) {
+          //Code for Category
+          var categoryArray = [];
+          $("[id^="+require.mozuData("categoryconfig").categoryClass+"]").each(function(){
+            $(this).empty();
+            categoryArray.push({
+              api_key: require.mozuData("categorysettings").apiKey,
+              locale: require.mozuData("categorysettings").locale,
+              merchant_group_id: require.mozuData("categorysettings").merchantGrpId,
+              merchant_id: require.mozuData("categorysettings").merchantId,
+              page_id: $(this).data('pcode'),
+              components: {
+                  CategorySnippet: $(this).attr('id')
+              }
+            });
+          });
+          if (categoryArray.length) {
+            window.POWERREVIEWS.display.render(categoryArray);
+          }
+      }
       });
 });
