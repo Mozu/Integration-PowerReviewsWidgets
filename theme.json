@@ -691,7 +691,8 @@
     "useDebugScripts": false,
     "useSearchAutocomplete": true,
     "allowCustomerInitiatedReturns": true,
-    "visaCheckoutSdkUrl": "https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js"
+    "visaCheckoutSdkUrl": "https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js",
+    "powerReviewsSettingsList": "mozu-powerreviews2-sitesettings@mzint"
   },
   "layoutWidgets": [
     {
@@ -1054,13 +1055,22 @@
           "fieldLabel": "Number to display",
           "name": "count",
           "xtype": "mz-input-number"
+        },
+        {
+          "anchor": "100%",
+          "fieldLabel": "Product Property",
+          "name": "attributeId",
+          "xtype": "mz-input-text"
         }
       ],
       "icon": "/resources/admin/widgets/26_related_products.png",
       "id": "relatedproducts",
       "validPageTypes": [
         "product",
-        "cart"
+        "category",
+        "cart",
+        "searchresult",
+        "search"
       ]
     },
     {
@@ -1215,8 +1225,7 @@
         "id": "pr_product_review_snippets",
         "displayName": "PowerReviews Snippets",
         "displayTemplate": "PowerReviews/pr-product-snippets",
-        "editViewFields": [
-          {
+      "editViewFields": [{
             "name": "widgetType",
             "fieldLabel": "Widget Type",
             "xtype": "combo",
@@ -1228,10 +1237,25 @@
               [
                 "socialAnswerSnippet",
                 "Q&A Snippet"
-              ]
             ]
-          }
-        ],
+          ]
+        },
+        {
+          "name": "idType",
+          "fieldLabel": "UPC/ASIN",
+          "xtype": "combo",
+          "store": [
+            [
+              "upc",
+              "UPC"
+            ],
+            [
+              "asin",
+              "ASIN"
+            ]
+          ]
+        }
+      ],
         "icon": "/resources/admin/widgets/power_review_icon.png",
         "validPageTypes": [
           "product"
@@ -1280,13 +1304,67 @@
                 "List"
               ]
 	          ]
-	        }
-	      ],
+        },
+        {
+          "name": "idType",
+          "fieldLabel": "UPC/ASIN",
+          "xtype": "combo",
+          "store": [
+            [
+              "upc",
+              "UPC"
+            ],
+            [
+              "asin",
+              "ASIN"
+            ]
+          ]
+        }
+      ],
 	      "icon": "/resources/admin/widgets/power_review_icon.png",
 	      "validPageTypes": [
 	        "product"
-	      ]
-	    },
+      ]
+    },
+    {
+      "category": "catalog",
+      "id": "pr_category_review",
+      "displayName": "PowerReviews Category Display",
+      "displayTemplate": "PowerReviews/pr-category-reviews",
+      "editViewFields": [
+        {
+          "name": "categoryClass",
+          "fieldLabel": "Category Container",
+          "xtype": "mz-input-text"
+        },
+        {
+          "name": "qvClass",
+          "fieldLabel": "Quick View Container",
+          "xtype": "mz-input-text"
+        },
+        {
+          "name": "idType",
+          "fieldLabel": "UPC/ASIN",
+          "xtype": "combo",
+          "store": [
+            [
+              "upc",
+              "UPC"
+            ],
+            [
+              "asin",
+              "ASIN"
+            ]
+          ]
+        }
+      ],
+      "icon": "/resources/admin/widgets/power_review_icon.png",
+      "validPageTypes": [
+        "category",
+        "search",
+        "search-results"
+      ]
+    },
 	    {
 	      "category": "catalog",
 	      "id": "pr_roibeacon",
@@ -1312,7 +1390,11 @@
 
 	      ],
 	      "validPageTypes": [
-	        "order"
+	        "order",
+		"checkout",
+		"checkoutv2",
+		"confirmation",
+		"confirmationv2"
 	      ]
 	    }
   ]

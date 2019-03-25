@@ -1,0 +1,16 @@
+  {% with model|first as modelVal %}
+  <script type="text/javascript">
+   POWERREVIEWS.display.render({
+      api_key: "{{modelVal.apiKey}}",
+      locale: "{{modelVal.locale}}",
+      merchant_group_id: "{{modelVal.merchantGrpId}}",
+      merchant_id: "{{modelVal.merchantId}}",
+      on_submit: function(config, data) {
+        jQuery(window).scrollTop(0);
+      },
+      components: {
+        Write: 'pr-write'
+      }
+    });
+  </script>
+  {% endwith %}

@@ -52,5 +52,5 @@
         {% endif %}
         {% endblock product-extrainfo %}
     </div>
+    <div class="mz-directory-ratings" id="mz-directory{% if model.isRelated == "true" %}-related{% endif %}-ratings-{{model.productCode}}" data-pcode="{{model.productCode}}"></div>
 </div>
-<script type="text/javascript" src="//ui.powerreviews.com/stable/4.0/ui.js"></script>

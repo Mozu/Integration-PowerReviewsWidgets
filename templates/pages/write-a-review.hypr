@@ -3,19 +3,13 @@
 
 {% block breadcrumbs %}{% endblock breadcrumbs %}
 <script type="text/javascript" src="//ui.powerreviews.com/stable/4.0/ui.js"></script>
-<div id="pr-write"></div>
-
-<script>
-  POWERREVIEWS.display.render({
-    api_key: '{{ pageContext.query.pr_api_key }}',
-    locale: '{{ pageContext.query.locale }}',
-    merchant_group_id: '{{ pageContext.query.pr_merchant_group_id }}',
-    merchant_id: '{{ pageContext.query.pr_merchant_id }}',
-    return_url : '{{pageContext.query.pr_returnUrl}}',
-    components: {
-      Write: 'pr-write'
-    }
-  });
-</script>
+<div id="pr-write" itemid="{{pageContext.query.pr_page_id}}"></div>
+{% for params in apiContext.headers %}
+  {% if params.key == "x-vol-site" %}
+    {% with "id eq {0}"|string_format(params.value) as filter %}
+      {% include_entities "widgets/PowerReviews/review-settings" listFQN="mozu-powerreviews2-sitesettings@mzint" filter=filter %}
+    {% endwith %}
+  {% endif %}
+{% endfor %}
 
 {% endblock body-content %}
