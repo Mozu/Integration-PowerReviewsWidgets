@@ -88,7 +88,9 @@ define(['modules/jquery-mozu','underscore', 'hyprlive', "modules/backbone-mozu",
                   });
                 });
               }
-
+              if (!product.description) {
+                product.description = product.name;
+              }
               //TODO: add variants
               var components = {};
               if ($("#pr-reviewsnippet").length > 0) components.ReviewSnippet = "pr-reviewsnippet";
